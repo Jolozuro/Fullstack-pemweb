@@ -1,19 +1,21 @@
-import React, { Component } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import NavbarComponent from './components/NavbarComponent'
-import { Home, About, Menu } from './pages/index'
+import React, { Component } from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { NavbarComponent } from './components';
+import { Menuu, Home, About} from './pages';
 
 export default class App extends Component {
   render() {
     return (
-      <Router>
-        <NavbarComponent/>
-        <Routes>
-          <Route path='/' element={<Home />}/>
-          <Route path='/about' element={<About />}/>
-          <Route path='/menu' element={<Menu />}/>
-        </Routes>
-      </Router>
-    )
+      <BrowserRouter>
+        <NavbarComponent />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/menuu" element={<Menuu />} />
+            <Route path="/about" element={<About />} />  {/* Pastikan path-nya sesuai */}
+          </Routes>
+        </main>
+      </BrowserRouter>
+    );
   }
 }

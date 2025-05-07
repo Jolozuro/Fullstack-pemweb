@@ -1,5 +1,5 @@
-import Home from './Home'
-import About from './About'
-import Menu from './Menuu'
+import Menuu from './Menuu';
+import Home from './Home';
+import About from './About';
 
-export{ Home,About,Menu };
+export { Menuu, Home, About };
