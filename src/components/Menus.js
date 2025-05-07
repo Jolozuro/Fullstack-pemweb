@@ -12,7 +12,7 @@ const Menus = ({ menu, masukKeranjang }) => {
             "assets/images/" +
             menu.category.nama.toLowerCase() +
             "/" +
-            menu.gambar
+            menu.gambar 
           }
         />
         <Card.Body>
