@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Row, Col, Container } from "react-bootstrap";
-import { Menus,ListCategories} from "../components";
+import { Menus, ListCategories, Hasil } from "../components";
 import { API_URL } from "../utils/constants";
 import axios from "axios";
 import swal from "sweetalert";
@@ -116,10 +116,7 @@ class Menuu extends Component {
       <div className="mt-3">
         <Container fluid>
           <Row>
-            <ListCategories
-              changeCategory={this.changeCategory}
-              categoriYangDipilih={kategoriYangDipilih}
-            />
+            <ListCategories/>
             <Col className="mt-3">
               <h4><strong>Daftar Produk</strong></h4>
               <hr />
@@ -133,7 +130,7 @@ class Menuu extends Component {
                 ))}
               </Row>
             </Col>
-            
+            <Hasil/>
           </Row>
         </Container>
       </div>
