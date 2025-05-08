@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Row, Col, Container } from "react-bootstrap";
-import { Hasil, ListCategories, Menus } from "../components";
+import { Hasil, ListCategory, Menus } from "../components";
 import { API_URL } from "../utils/constants";
 import axios from "axios";
 import swal from "sweetalert";
@@ -52,6 +52,7 @@ class Menuu extends Component {
         console.error("Error fetching keranjangs:", error);
       });
   };
+  
 
   changeCategory = (value) => {
     this.setState(
@@ -116,7 +117,7 @@ class Menuu extends Component {
       <div className="mt-3">
         <Container fluid>
           <Row>
-            <ListCategories
+            <ListCategory
               changeCategory={this.changeCategory}
               categoriYangDipilih={kategoriYangDipilih}
             />
@@ -133,7 +134,7 @@ class Menuu extends Component {
                 ))}
               </Row>
             </Col>
-            <Hasil keranjangs={keranjangs} {...this.props} />
+            <Hasil keranjangs={keranjangs} getListKeranjang={this.getKeranjangs} {...this.props} />
           </Row>
         </Container>
       </div>

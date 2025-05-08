@@ -41,12 +41,12 @@ const Home = () => {
         }}
       >
         <Row className="min-vh-100 d-flex align-items-center">
-          <Col xs={12} md={8}>
+          <Col xs={12} md={7}>
             <h1 className="mb-4 text-white animate__animated animate__fadeInDown">
               <strong>Selamat Datang di Dapur Nusantara</strong>
             </h1>
             <p className="lead text-white animate__animated animate__fadeInUp animate__delay-1s">
-              Nikmati pengalaman kuliner yang tak terlupakan di Dapur Nusantara. Kami menghadirkan kekayaan cita rasa Indonesia melalui berbagai pilihan menu favorit — dari hidangan tradisional yang menggugah kenangan, hingga kreasi modern penuh inovasi.
+              Nikmati pengalaman kuliner yang tak terlupakan di Dapur Nusantara. Kami menghadirkan kekayaan cita rasa Indonesia melalui berbagai pilihan menu favorit dari hidangan tradisional yang menggugah kenangan, hingga kreasi modern penuh inovasi.
             </p>
             <p className="lead text-white animate__animated animate__fadeInUp animate__delay-2s">
               Temukan kelezatan dalam setiap gigitan. Mari rayakan keberagaman rasa Nusantara bersama kami.

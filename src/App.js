@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { NavbarComponent } from './components';
-import { Menuu, Home, About} from './pages';
+import { Menuu, Home, About, Review} from './pages';
 
 export default class App extends Component {
   render() {
@@ -13,6 +13,7 @@ export default class App extends Component {
             <Route path="/" element={<Home />} />
             <Route path="/menuu" element={<Menuu />} />
             <Route path="/about" element={<About />} />  {/* Pastikan path-nya sesuai */}
+            <Route path="/review" element={<Review />} />
           </Routes>
         </main>
       </BrowserRouter>
