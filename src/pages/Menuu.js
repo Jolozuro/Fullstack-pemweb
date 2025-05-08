@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Row, Col, Container } from "react-bootstrap";
-import { Menus, ListCategories, Hasil } from "../components";
+import { Hasil, ListCategories, Menus } from "../components";
 import { API_URL } from "../utils/constants";
 import axios from "axios";
 import swal from "sweetalert";
@@ -111,12 +111,15 @@ class Menuu extends Component {
   };
 
   render() {
-    const { menus, kategoriYangDipilih } = this.state;
+    const { menus, kategoriYangDipilih, keranjangs } = this.state;
     return (
       <div className="mt-3">
         <Container fluid>
           <Row>
-            <ListCategories/>
+            <ListCategories
+              changeCategory={this.changeCategory}
+              categoriYangDipilih={kategoriYangDipilih}
+            />
             <Col className="mt-3">
               <h4><strong>Daftar Produk</strong></h4>
               <hr />
@@ -130,7 +133,7 @@ class Menuu extends Component {
                 ))}
               </Row>
             </Col>
-            <Hasil/>
+            <Hasil keranjangs={keranjangs} {...this.props} />
           </Row>
         </Container>
       </div>
