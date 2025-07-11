@@ -1,8 +1,8 @@
-import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { numberWithCommas } from "../utils/utils";
+import { faMinus, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const ModalKeranjang = ({
   showModal,
@@ -64,7 +64,7 @@ const ModalKeranjang = ({
                   <Form.Label>Keterangan :</Form.Label>
                   <Form.Control
                     as="textarea"
-                    rows="3"
+                    rows={3}
                     name="keterangan"
                     placeholder="Contoh : Pedes, Nasi Setengah"
                     value={keterangan}
@@ -74,9 +74,11 @@ const ModalKeranjang = ({
               </Col>
             </Row>
 
-            <Button variant="primary" type="submit" block>
-              Simpan
-            </Button>
+            <div className="d-grid gap-2">
+              <Button variant="primary" type="submit">
+                Simpan
+              </Button>
+            </div>
           </Form>
         </Modal.Body>
         <Modal.Footer>

@@ -6,6 +6,7 @@ import TotalBayar from "./TotalBayar";
 import { API_URL } from "../utils/constants";
 import axios from "axios";
 import swal from "sweetalert";
+import "../App.css"; // pastikan CSS tambahan ada di sini
 
 export default class Hasil extends Component {
   state = {
@@ -14,20 +15,27 @@ export default class Hasil extends Component {
     jumlah: 0,
     keterangan: "",
     totalHarga: 0,
+    loading: false,
   };
 
   handleShow = (menuKeranjang) => {
     this.setState({
       showModal: true,
       keranjangDetail: menuKeranjang,
-      jumlah: menuKeranjang.jumlah,
+      jumlah: parseInt(menuKeranjang.jumlah),
       keterangan: menuKeranjang.keterangan || "",
       totalHarga: menuKeranjang.total_harga,
     });
   };
 
   handleClose = () => {
-    this.setState({ showModal: false });
+    this.setState({
+      showModal: false,
+      keranjangDetail: null,
+      jumlah: 0,
+      keterangan: "",
+      totalHarga: 0,
+    });
   };
 
   tambah = () => {
@@ -56,73 +64,100 @@ export default class Hasil extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    this.handleClose();
-  
     const { jumlah, totalHarga, keterangan, keranjangDetail } = this.state;
-    if (!keranjangDetail?.product) return;
-  
+
+    if (!keranjangDetail || !keranjangDetail.product || !keranjangDetail.product.id) {
+      swal("Gagal", "Produk tidak valid!", "error");
+      return;
+    }
+
     const data = {
+      id: keranjangDetail.id,
+      product_id: keranjangDetail.product.id,
       jumlah,
       total_harga: totalHarga,
-      product: keranjangDetail.product,
       keterangan,
     };
-  
+
+    this.setState({ loading: true });
+    this.handleClose();
+
     axios
-      .put(`${API_URL}keranjangs/${keranjangDetail.id}`, data)
+      .post(`${API_URL}add_keranjang.php`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then(() => {
         swal({
           title: "Update Pesanan!",
-          text: `Sukses Update Pesanan ${data.product.nama}`,
+          text: `Sukses Update Pesanan ${keranjangDetail.product.nama}`,
           icon: "success",
           button: false,
           timer: 1500,
         });
 
-        // 👉 Refresh data dari parent (mengambil ulang data keranjang)
         if (this.props.getListKeranjang) {
           this.props.getListKeranjang();
         }
       })
       .catch((error) => {
-        console.error("Update error:", error);
+        console.error("Gagal tambah/update keranjang:", error);
+        swal("Error", "Gagal mengirim ke server", "error");
+      })
+      .finally(() => {
+        this.setState({ loading: false });
       });
   };
-  
+
   hapusPesanan = (id) => {
+    this.setState({ loading: true });
     this.handleClose();
-  
+
     axios
-      .delete(`${API_URL}keranjangs/${id}`)
+      .post(`${API_URL}delete_keranjang.php`, { id }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then(() => {
         swal({
           title: "Hapus Pesanan!",
-          text: `Sukses Hapus Pesanan ${this.state.keranjangDetail?.product?.nama}`,
+          text: "Pesanan berhasil dihapus",
           icon: "error",
           button: false,
           timer: 1500,
         });
-  
-        // Memanggil fungsi dari parent untuk menyegarkan data keranjang
+
         if (this.props.getListKeranjang) {
           this.props.getListKeranjang();
         }
       })
       .catch((error) => {
         console.error("Delete error:", error);
+      })
+      .finally(() => {
+        this.setState({ loading: false });
       });
-  };   
+  };
 
   render() {
     const { keranjangs } = this.props;
-    const { showModal, keranjangDetail, jumlah, keterangan, totalHarga } = this.state;
+    const {
+      showModal,
+      keranjangDetail,
+      jumlah,
+      keterangan,
+      totalHarga,
+      loading,
+    } = this.state;
 
     return (
-      <Col md={3} className="mt-3">
+      <Col xs={12} md={3} className="mt-3">
         <h4><strong>Hasil</strong></h4>
         <hr />
-        {keranjangs.length > 0 && (
-          <Card className="overflow-auto hasil">
+        {keranjangs?.length > 0 && (
+          <Card className="overflow-auto hasil shadow-sm">
             <ListGroup variant="flush">
               {keranjangs.map((menuKeranjang) => (
                 <ListGroup.Item
@@ -139,34 +174,35 @@ export default class Hasil extends Component {
                       </h4>
                     </Col>
                     <Col>
-                      <h5>{menuKeranjang.product.nama}</h5>
-                      <p>Rp. {numberWithCommas(menuKeranjang.product.harga)}</p>
+                      <h5>{menuKeranjang.product?.nama || "Menu Tidak Ditemukan"}</h5>
+                      <p className="mb-0">Rp. {numberWithCommas(menuKeranjang.product?.harga || 0)}</p>
                     </Col>
-                    <Col>
-                      <strong className="float-end">
+                    <Col className="text-end">
+                      <strong>
                         Rp. {numberWithCommas(menuKeranjang.total_harga)}
                       </strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>
               ))}
-
-              <ModalKeranjang
-                showModal={showModal}
-                handleClose={this.handleClose}
-                keranjangDetail={keranjangDetail}
-                jumlah={jumlah}
-                keterangan={keterangan}
-                totalHarga={totalHarga}
-                tambah={this.tambah}
-                kurang={this.kurang}
-                changeHandler={this.changeHandler}
-                handleSubmit={this.handleSubmit}
-                hapusPesanan={this.hapusPesanan}
-              />
             </ListGroup>
           </Card>
         )}
+
+        <ModalKeranjang
+          showModal={showModal}
+          handleClose={this.handleClose}
+          keranjangDetail={keranjangDetail}
+          jumlah={jumlah}
+          keterangan={keterangan}
+          totalHarga={totalHarga}
+          tambah={this.tambah}
+          kurang={this.kurang}
+          changeHandler={this.changeHandler}
+          handleSubmit={this.handleSubmit}
+          hapusPesanan={this.hapusPesanan}
+          loading={loading}
+        />
 
         <TotalBayar keranjangs={keranjangs} {...this.props} />
       </Col>

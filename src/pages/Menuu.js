@@ -21,120 +21,146 @@ class Menuu extends Component {
     this._isMounted = true;
     this.getProducts(this.state.kategoriYangDipilih);
     this.getKeranjangs();
+    console.log("Mounted, ambil data...");
   }
+  
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
-  getProducts = (kategori) => {
+  getProducts = (kategori = "Makanan") => {
     axios
-      .get(API_URL + "products?category.nama=" + kategori)
+      .get(`${API_URL}get_products.php?category=${kategori}`)
       .then((res) => {
         if (this._isMounted) {
-          this.setState({ menus: res.data });
+          const data = res.data;
+          if (Array.isArray(data)) {
+            this.setState({ menus: data });
+          } else {
+            console.warn("❌ Produk bukan array:", data);
+            this.setState({ menus: [] });
+          }
         }
       })
       .catch((error) => {
-        console.error("Error fetching products:", error);
+        console.error("Error get_products:", error);
       });
   };
 
   getKeranjangs = () => {
     axios
-      .get(API_URL + "keranjangs")
+      .get(`${API_URL}get_keranjangs.php`)
       .then((res) => {
         if (this._isMounted) {
-          this.setState({ keranjangs: res.data });
+          const data = res.data;
+          if (Array.isArray(data)) {
+            this.setState({ keranjangs: data });
+          } else {
+            console.warn("❌ Keranjang bukan array:", data);
+            this.setState({ keranjangs: [] });
+          }
         }
       })
       .catch((error) => {
-        console.error("Error fetching keranjangs:", error);
+        console.error("Error get_keranjangs:", error);
       });
   };
-  
 
   changeCategory = (value) => {
-    this.setState(
-      { kategoriYangDipilih: value, menus: [] },
-      () => this.getProducts(value)
-    );
+    this.setState({ kategoriYangDipilih: value }, () => {
+      this.getProducts(value);
+    });
   };
 
   masukKeranjang = (value) => {
-    axios
-      .get(API_URL + "keranjangs?product.id=" + value.id)
+    axios.get(`${API_URL}get_keranjangs.php?product_id=${value.id}`)
       .then((res) => {
-        if (res.data.length === 0) {
+        const existingData = Array.isArray(res.data) ? res.data : [];
+
+        if (existingData.length === 0) {
+          // Belum ada di keranjang
           const keranjang = {
             jumlah: 1,
             total_harga: value.harga,
-            product: value,
+            product_id: value.id,
           };
 
-          axios
-            .post(API_URL + "keranjangs", keranjang)
-            .then(() => {
-              this.getKeranjangs(); // refresh
-              swal({
-                title: "Sukses Masuk Keranjang",
-                text: `Produk ${value.nama} ditambahkan.`,
-                icon: "success",
-                button: false,
-                timer: 1500,
-              });
+          axios.post(`${API_URL}add_keranjang.php`, keranjang, {
+            headers: { "Content-Type": "application/json" },
+          }).then(() => {
+            this.getKeranjangs();
+            swal({
+              title: "Sukses Masuk Keranjang",
+              text: `Produk ${value.nama} ditambahkan.`,
+              icon: "success",
+              button: false,
+              timer: 1500,
             });
+          });
         } else {
-          const existing = res.data[0];
+          // Sudah ada, tinggal update
+          const existing = existingData[0];
           const keranjang = {
-            jumlah: existing.jumlah + 1,
-            total_harga: existing.total_harga + value.harga,
-            product: value,
+            id: existing.id,
+            jumlah: parseInt(existing.jumlah) + 1,
+            total_harga: parseInt(existing.total_harga) + parseInt(value.harga),
+            keterangan: existing.keterangan || "",
           };
 
-          axios
-            .put(API_URL + "keranjangs/" + existing.id, keranjang)
-            .then(() => {
-              this.getKeranjangs(); // refresh
-              swal({
-                title: "Sukses Update Keranjang",
-                text: `Produk ${value.nama} diperbarui.`,
-                icon: "success",
-                button: false,
-                timer: 1500,
-              });
+          axios.post(`${API_URL}update_keranjang.php`, keranjang, {
+            headers: { "Content-Type": "application/json" },
+          }).then(() => {
+            this.getKeranjangs();
+            swal({
+              title: "Sukses Update Keranjang",
+              text: `Produk ${value.nama} diperbarui.`,
+              icon: "success",
+              button: false,
+              timer: 1500,
             });
+          });
         }
-      })
-      .catch((error) => {
-        console.error("Error keranjang:", error);
       });
-  };
+  };   
 
   render() {
     const { menus, kategoriYangDipilih, keranjangs } = this.state;
+
     return (
       <div className="mt-3">
         <Container fluid>
           <Row>
             <ListCategory
               changeCategory={this.changeCategory}
-              categoriYangDipilih={kategoriYangDipilih}
+              kategoriYangDipilih={kategoriYangDipilih}
             />
+
             <Col className="mt-3">
               <h4><strong>Daftar Produk</strong></h4>
               <hr />
               <Row className="overflow-auto menu">
-                {menus.map((menu) => (
-                  <Menus
-                    key={menu.id}
-                    menu={menu}
-                    masukKeranjang={this.masukKeranjang}
-                  />
-                ))}
+                {menus.length > 0 ? (
+                  menus.map((menu) => (
+                    <Menus
+                      key={menu.id}
+                      menu={menu}
+                      masukKeranjang={this.masukKeranjang}
+                    />
+                  ))
+                ) : (
+                  <Col>
+                    <p className="text-muted">Produk tidak ditemukan.</p>
+                  </Col>
+                )}
               </Row>
             </Col>
-            <Hasil keranjangs={keranjangs} getListKeranjang={this.getKeranjangs} {...this.props} />
+
+            <Hasil
+              keranjangs={keranjangs}
+              getListKeranjang={this.getKeranjangs}
+              {...this.props}
+            />
           </Row>
         </Container>
       </div>

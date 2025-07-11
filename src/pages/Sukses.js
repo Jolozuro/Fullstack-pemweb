@@ -7,15 +7,17 @@ import { API_URL } from "../utils/constants";
 export default class Sukses extends Component {
   componentDidMount() {
     axios
-      .get(API_URL + "keranjangs")
+      .get(API_URL + "get_keranjangs.php")
       .then((res) => {
         const keranjangs = res.data;
-        keranjangs.map(function(item) {
-            return axios
-                .delete(API_URL+"keranjangs/"+item.id)
-                .then((res) => console.log(res))
-                .catch((error) => console.log(error))
-        })
+        keranjangs.forEach((item) => {
+          axios
+            .post(API_URL + "delete_keranjang.php", JSON.stringify({ id: item.id }), {
+              headers: { "Content-Type": "application/json" }
+            })
+            .then((res) => console.log("Deleted:", res.data))
+            .catch((error) => console.log("Delete error:", error));
+        });
       })
       .catch((error) => {
         console.log("Error yaa ", error);

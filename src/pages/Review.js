@@ -14,6 +14,7 @@ const Review = () => {
     fetchReviews();
   }, []);
 
+
   const fetchReviews = async () => {
     try {
       const res = await axios.get(API_URL);
