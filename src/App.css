@@ -1,0 +1,72 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* GANTI: supaya bisa discroll di HP */
+}
+
+body {
+  margin: 0;
+  font-family: 'Public Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: 60px;
+}
+
+.navbar,
+.custom-navbar {
+  background-color: #22668A;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.custom-navbar {
+  height: 80px;
+  display: flex;
+  align-items: center;
+}
+
+.custom-navbar .navbar-brand {
+  font-size: 1.8rem;
+}
+
+.custom-navbar .nav-link {
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+}
+
+.category-aktif {
+  background-color: #22668A;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #22668A;
+}
+
+@media only screen and (max-height: 1000px) {
+  .hasil {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .menu {
+    height: 800px;
+  }
+}
+
+/* Sembunyikan scrollbar webkit untuk hasil scrollable */
+.overflow-auto::-webkit-scrollbar {
+  display: none;
+}
+
+/* Untuk kode tampil rapi */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
