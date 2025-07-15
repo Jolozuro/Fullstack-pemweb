@@ -1,0 +1,72 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: 'Public Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: 60px;
+}
+
+.navbar {
+  background-color: #22668A;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.custom-navbar {
+  height: 80px; /* atur sesuai kebutuhan */
+  background-color: #22668A;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.custom-navbar .navbar-brand {
+  font-size: 1.8rem; /* Perbesar teks brand */
+}
+
+.custom-navbar .nav-link {
+  font-size: 1.1rem; /* Perbesar teks menu */
+  padding: 0.75rem 1rem;
+}
+
+
+.category-aktif {
+  background-color: #22668A;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #22668A;
+}
+
+@media only screen and (max-height: 1000px) {
+  .hasil {
+    height: 650px;
+  }
+  
+  .menu {
+    height: 800px;
+  }
+}
+
+.overflow-auto::-webkit-scrollbar{
+  display: none;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
