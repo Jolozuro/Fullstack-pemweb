@@ -42,7 +42,7 @@ foreach ($data['menus'] as $item) {
     }
 
     $product_id = (int)$item['product_id'];
-    $jumlah = (int)$item['jumlah'];
+    $jumlah = (int)$item['jumlah'] ;
     $total_harga = (int)$item['total_harga'];
 
     $insert_detail = $conn->query("INSERT INTO detail_pesanan (pesanan_id, product_id, jumlah, total_harga)
